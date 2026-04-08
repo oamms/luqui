@@ -44,13 +44,14 @@
             <div class="bubble"><div id="luqui-bubble">Hallo! Ich bin Luqui. Was checken wir heute?</div></div>
         </div>
 
-        <div id="screen-menu">
-            <div class="menu-card" onclick="nav('screen-meds')">💊 Medikamente & BTM</div>
-            <div class="menu-card" onclick="nav('screen-pflege')">📋 Pflege-Protokolle</div>
-            <div class="menu-card" onclick="nav('screen-infusion')">💧 Infusionen</div>
-            <div class="menu-card" onclick="nav('screen-neuro')">🧠 Neurologische Erkr.</div>
-            <div class="menu-card" onclick="nav('screen-symptome')">🌡️ Allgemeine Symptome</div>
+            <div id="screen-menu">
+            <div class="menu-card" onclick="nav('screen-meds')" onmouseenter="luquiTalk('meds')">💊 Medikamente & BTM</div>
+            <div class="menu-card" onclick="nav('screen-pflege')" onmouseenter="luquiTalk('pflege')">📋 Pflege-Protokolle</div>
+            <div class="menu-card" onclick="nav('screen-infusion')" onmouseenter="luquiTalk('infusion')">💧 Infusionen</div>
+            <div class="menu-card" onclick="nav('screen-neuro')" onmouseenter="luquiTalk('neuro')">🧠 Neurologie</div>
+            <div class="menu-card" onclick="nav('screen-symptome')" onmouseenter="luquiTalk('symptome')">🌡️ Allgemeine Symptome</div>
         </div>
+
 
         <div id="screen-meds" class="hidden">
             <input type="text" id="searchM" class="search-input" placeholder="Wirkstoff..." onkeyup="search('med')">
@@ -85,11 +86,17 @@
 
     <script>
         /* JAVASCRIPT INTEGRADO - TODA LA INFO ESTÁ AQUÍ */
-        const phrases = {
+                const phrases = {
             welcome: "Hallo! Ich bin Luqui. Was checken wir heute?",
             meds: "Vorsicht bei BTM und Dosierung!",
-            back: "Zurück zum Menü."
+            pflege: "Standards sind wichtig für die Qualität.",
+            infusion: "Flüssigkeitshaushalt im Blick behalten!",
+            neuro: "Neurologie ist komplex, aber spannend.",
+            symptome: "Symptome richtig deuten spart Zeit.",
+            back: "Alles klar, zurück zum Menü.",
+            hover_avatar: "Bereit für den Dienst! Hast du schon Pause gemacht?"
         };
+
 
         const dbMeds = [
             { n: "Ibuprofen", g: "NSAR", a: "Schmerz/Fieber", nw: "Magen", d: "2h Abstand zu ASS." },
