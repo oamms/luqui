@@ -219,14 +219,12 @@
             { n: "Exsikkose", g: "Mangel", a: "Hautfalten", nw: "Niere", d: "Trinken forcieren." },
             { n: "Obstipation", g: "Darm", a: "Kein Stuhl", nw: "Ileus", d: "Ballaststoffe." },
             { n: "Dyspnoe", g: "Atmung", a: "Atemnot", nw: "Panik", d: "Lippenbremse." }
-        ];
+                ]; // <-- Este cierre de la lista de medicamentos es VITAL
 
-                   // --- AQUÍ EMPIEZAN LAS INSTRUCCIONES (FUNCIONES) ---
-
-        // 1. Definimos LuquiTalk para que el error rojo desaparezca
         function luquiTalk(key) {
+            console.log("Luqui intentando hablar con: " + key); // Esto nos avisará en la consola
             const bubble = document.getElementById('luqui-bubble');
-            if (phrases && phrases[key]) {
+            if (phrases[key]) {
                 bubble.innerText = phrases[key];
             }
         }
