@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luqui - Enfermería Pro</title>
+    <style>
+        /* CSS INTEGRADO */
+        :root { --primary: #007bff; --bg: #e3f2fd; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .container { max-width: 480px; width: 100%; background: #fff; padding: 25px; border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); min-height: 90vh; text-align: center; border: 3px solid #000; position: relative; }
+        .luqui-visual { width: 90px; height: 90px; background: #fff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 3px solid #000; animation: float 3s infinite ease-in-out; margin-bottom: 10px; cursor: help; }
+        .bubble { position: relative; background: #fff; border: 3px solid #000; border-radius: 18px; padding: 12px; margin-bottom: 20px; font-weight: bold; min-height: 50px; display: flex; align-items: center; justify-content: center; line-height: 1.2; }
+        .menu-card { background: #fff; border: 3px solid #000; padding: 15px; border-radius: 18px; margin-bottom: 10px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .menu-card:hover { background: #f0f7ff; transform: translateY(-3px); box-shadow: 5px 5px 0px #000; }
+        .search-input { width: 100%; padding: 15px; border: 3px solid #000; border-radius: 12px; margin-bottom: 15px; font-weight: bold; outline: none; font-size: 16px; box-sizing: border-box; }
+        .scroll-area { max-height: 420px; overflow-y: auto; text-align: left; padding: 5px; }
+        .res-item { background: #f1f8ff; padding: 15px; border-radius: 15px; border: 2px solid #000; margin-top: 12px; animation: fadeIn 0.3s; }
+        .nw-box { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #000; font-size: 13px; color: #d9534f; }
+        .tip-box { background: #fff; padding: 8px; border: 1px solid #000; border-radius: 10px; margin-top: 8px; font-size: 13px; color: #444; }
+        .back-btn { background: #6c757d; color: #fff; border: 3px solid #000; padding: 12px; border-radius: 12px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        .hidden { display: none !important; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="luqui-header">
+            <div class="luqui-visual">
+                <svg width="65" height="65" viewBox="0 0 100 100">
+                    <rect x="15" y="30" width="70" height="60" rx="15" fill="white" stroke="black" stroke-width="3" />
+                    <rect x="25" y="40" width="50" height="35" rx="8" fill="#90e0ef" stroke="black" stroke-width="2" />
+                    <circle cx="40" cy="53" r="4" fill="#0077b6" />
+                    <circle cx="60" cy="53" r="4" fill="#0077b6" />
+                    <path d="M42 65 Q50 72 58 65" stroke="#0077b6" stroke-width="2" fill="none" />
+                    <path d="M35 30 L65 30 L60 12 L40 12 Z" fill="white" stroke="black" stroke-width="3" />
+                    <rect x="47" y="15" width="6" height="12" fill="red" />
+                    <rect x="44" y="18" width="12" height="6" fill="red" />
+                    <circle cx="15" cy="15" r="5" fill="#0077b6" stroke="black" stroke-width="2" />
+                    <circle cx="85" cy="15" r="5" fill="#0077b6" stroke="black" stroke-width="2" />
+                </svg>
+            </div>
+            <div class="bubble"><div id="luqui-bubble">Hallo! Ich bin Luqui. Was checken wir heute?</div></div>
+        </div>
+
+        <div id="screen-menu">
+            <div class="menu-card" onclick="nav('screen-meds')">💊 Medikamente & BTM</div>
+            <div class="menu-card" onclick="nav('screen-pflege')">📋 Pflege-Protokolle</div>
+            <div class="menu-card" onclick="nav('screen-infusion')">💧 Infusionen</div>
+            <div class="menu-card" onclick="nav('screen-neuro')">🧠 Neurologische Erkr.</div>
+            <div class="menu-card" onclick="nav('screen-symptome')">🌡️ Allgemeine Symptome</div>
+        </div>
+
+        <div id="screen-meds" class="hidden">
+            <input type="text" id="searchM" class="search-input" placeholder="Wirkstoff..." onkeyup="search('med')">
+            <div id="list-m" class="scroll-area"></div>
+            <button class="back-btn" onclick="nav('screen-menu')">⬅ Menü</button>
+        </div>
+
+        <div id="screen-pflege" class="hidden">
+            <input type="text" id="searchP" class="search-input" placeholder="Pflege..." onkeyup="search('pflege')">
+            <div id="list-p" class="scroll-area"></div>
+            <button class="back-btn" onclick="nav('screen-menu')">⬅ Menü</button>
+        </div>
+
+        <div id="screen-infusion" class="hidden">
+            <input type="text" id="searchI" class="search-input" placeholder="Infusion..." onkeyup="search('infusion')">
+            <div id="list-i" class="scroll-area"></div>
+            <button class="back-btn" onclick="nav('screen-menu')">⬅ Menü</button>
+        </div>
+
+        <div id="screen-neuro" class="hidden">
+            <input type="text" id="searchN" class="search-input" placeholder="Neuro..." onkeyup="search('neuro')">
+            <div id="list-n" class="scroll-area"></div>
+            <button class="back-btn" onclick="nav('screen-menu')">⬅ Menü</button>
+        </div>
+
+        <div id="screen-symptome" class="hidden">
+            <input type="text" id="searchS" class="search-input" placeholder="Symptom..." onkeyup="search('symptom')">
+            <div id="list-s" class="scroll-area"></div>
+            <button class="back-btn" onclick="nav('screen-menu')">⬅ Menü</button>
+        </div>
+    </div>
+
+    <script>
+        /* JAVASCRIPT INTEGRADO - TODA LA INFO ESTÁ AQUÍ */
+        const phrases = {
+            welcome: "Hallo! Ich bin Luqui. Was checken wir heute?",
+            meds: "Vorsicht bei BTM und Dosierung!",
+            back: "Zurück zum Menü."
+        };
+
+        const dbMeds = [
+            { n: "Ibuprofen", g: "NSAR", a: "Schmerz/Fieber", nw: "Magen", d: "2h Abstand zu ASS." },
+            { n: "Paracetamol", g: "Analgetikum", a: "Fieber", nw: "Leber", d: "Max 4g/Tag." },
+            { n: "Morphin", g: "BTM", a: "Starke Schmerzen", nw: "Atemnot", d: "Vigilanz prüfen." },
+            { n: "Novalgin", g: "Analgetikum", a: "Schmerz", nw: "Blutbild", d: "Absetzen b. Halsweh." },
+            { n: "Pantoprazol", g: "PPI", a: "Magenschutz", nw: "Keine", d: "Morgens nüchtern." },
+            { n: "L-Thyroxin", g: "Hormon", a: "Schilddrüse", nw: "Herzrasen", d: "30 Min vor Essen." },
+            { n: "Ramipril", g: "ACE-Hemmer", a: "Blutdruck", nw: "Husten", d: "Kalium prüfen." },
+            { n: "Bisoprolol", g: "Betablocker", a: "Herz", nw: "Bradykardie", d: "Puls prüfen." },
+            { n: "Eliquis", g: "DOAK", a: "Gerinnung", nw: "Blutung", d: "1-0-1 Schema." },
+            { n: "Xarelto", g: "DOAK", a: "Thrombose", nw: "Blutung", d: "Zum Essen." },
+            { n: "Marcumar", g: "VKA", a: "Gerinnung", nw: "Einblutung", d: "INR Wert." },
+            { n: "Tavor", g: "Benzo", a: "Unruhe", nw: "Sturz", d: "Senioren Vorsicht." },
+            { n: "Melperon", g: "Neuroleptikum", a: "Schlaf", nw: "RR Abfall", d: "Abends." },
+            { n: "Furosemid", g: "Diuretikum", a: "Ödeme", nw: "Elektrolyte", d: "Morgens." },
+            { n: "Metformin", g: "Diabetes", a: "Zucker", nw: "Magen", d: "Nach Essen." },
+            { n: "Novorapid", g: "Insulin", a: "Korrektur", nw: "Hypo", d: "Essen bereitstellen." },
+            { n: "Lantus", g: "Insulin lang", a: "Basis", nw: "Haut", d: "Stelle rotieren." },
+            { n: "Movicol", g: "Laxans", a: "Darm", nw: "Blähung", d: "Viel Wasser." },
+            { n: "Fentanyl", g: "Opioid (BTM)", a: "Chron. Schmerz", nw: "Haut, Sedierung", d: "Pflaster alle 72h." },
+            { n: "Tilidin / Tramadol", g: "Opioid", a: "Mäßige Schmerzen", nw: "Schwindel", d: "Tropfen wirken fix." },
+            { n: "Palexia", g: "Opioid (BTM)", a: "Starke Schmerzen", nw: "Verwirrtheit", d: "BTM-Pflicht." },
+            { n: "Targin", g: "Opioid Kombi", a: "Starke Schmerzen", nw: "Weniger Obstipation", d: "Festes Schema." },
+            { n: "Hydromorphon", g: "Opioid (BTM)", a: "Tumorschmerz", nw: "Übelkeit", d: "Retardkapsel (BTM)." },
+            { n: "Oxygesic", g: "Opioid (BTM)", a: "Starke Schmerzen", nw: "Abhängigkeit", d: "Sicherer Schrank." },
+            { n: "Arcoxia", g: "COX-2 Hemmer", a: "Arthrose", nw: "Bluthochdruck", d: "Nur 1x täglich." },
+            { n: "Buscopan", g: "Spasmolytikum", a: "Bauchkrämpfe", nw: "Tachykardie", d: "Glatte Muskulatur." },
+            { n: "Amlodipin", g: "Calciumantagonist", a: "Blutdruck", nw: "Ödeme", d: "Beine hochlagern." },
+            { n: "Torasemid", g: "Diuretikum", a: "Herzinsuffizienz", nw: "Kaliumverlust", d: "Gewichtskontrolle." },
+            { n: "HCT", g: "Diuretikum", a: "Blutdruck", nw: "Elektrolyte", d: "Viel trinken." },
+            { n: "Candesartan", g: "Sartan", a: "Blutdruck", nw: "Schwindel", d: "Gute Verträglichkeit." },
+            { n: "Digitoxin", g: "Herzglykosid", a: "Vorhofflimmern", nw: "Sehstörung", d: "Spiegel prüfen." },
+            { n: "Nitrolingual", g: "Nitrat", a: "Angina Pectoris", nw: "RR-Abfall", d: "Nur im Sitzen." },
+            { n: "Catapressan", g: "Antihypertonikum", a: "Blutdruckkrise", nw: "Mundtrocken", d: "Nicht abrupt absetzen." },
+            { n: "Valsartan", g: "Sartan", a: "Herzinsuffizienz", nw: "Niere", d: "Kreatinin prüfen." },
+            { n: "Spironolacton", g: "Diuretikum K-sparend", a: "Ödeme", nw: "Hyperkaliämie", d: "Kalium kontrollieren." },
+            { n: "Metoprolol", g: "Betablocker", a: "Hypertonie", nw: "Kalte Füße", d: "Puls <50 Pause." },
+            { n: "Diazepam", g: "Benzodiazepin", a: "Spasmen", nw: "Müdigkeit", d: "Lange Wirkung." },
+            { n: "Risperidon", g: "Antipsychotikum", a: "Agitation", nw: "EPS", d: "Schlaganfallrisiko." },
+            { n: "Quetiapin", g: "Antipsychotikum", a: "Schlaf", nw: "Gewicht", d: "Ausschleichen." },
+            { n: "Citalopram", g: "SSRI", a: "Depression", nw: "Übelkeit", d: "Morgens einnehmen." },
+            { n: "Mirtazapin", g: "Antidepressivum", a: "Schlaf", nw: "Appetit", d: "Abends geben." },
+            { n: "Donepezil", g: "Antidementivum", a: "Demenz", nw: "Bradykardie", d: "Regelm. Puls." },
+            { n: "Sertralin", g: "SSRI", a: "Angst", nw: "Unruhe", d: "Regelmäßig." },
+            { n: "Venlafaxin", g: "SSNRI", a: "Depression", nw: "Blutdruck", d: "Nicht zerkauen." },
+            { n: "Opipramol", g: "Anxiolytikum", a: "Beruhigung", nw: "Mundtrocken", d: "Abends." },
+            { n: "Promethazin", g: "Sedativum", a: "Unruhe", nw: "Lichtempfindlich", d: "Sturzgefahr." },
+            { n: "Zopiclon", g: "Z-Drug", a: "Schlaf", nw: "Bitter", d: "Direkt vor Bett." },
+            { n: "Zolpidem", g: "Z-Drug", a: "Einschlafen", nw: "Halluzination", d: "Wirkt fix." },
+            { n: "Keppra", g: "Antiepileptikum", a: "Anfälle", nw: "Aggressiv", d: "Stimmung prüfen." },
+            { n: "Valproat", g: "Antiepileptikum", a: "Epilepsie", nw: "Haarausfall", d: "Leberwerte." },
+            { n: "Vimpat", g: "Antiepileptikum", a: "Anfälle", nw: "Schwindel", d: "Sturzhilfe." },
+            { n: "Lyrica", g: "Anticonvulsivum", a: "Nervenschmerz", nw: "Ödeme", d: "Suchtgefahr." },
+            { n: "Gabapentin", g: "Anticonvulsiva", a: "Nervenschmerz", nw: "Müde", d: "Nierenfunktion." },
+            { n: "Lamotrigin", g: "Antiepileptikum", a: "Anfälle", nw: "Haut", d: "Langsam steigern." },
+            { n: "Amoxicillin", g: "Penicillin", a: "Infekte", nw: "Durchfall", d: "Allergie prüfen." },
+            { n: "Cefuroxim", g: "Cephalosporin", a: "Infektion", nw: "Pilz", d: "Zeitabstand." },
+            { n: "Ciprofloxacin", g: "Chinolon", a: "Infekte", nw: "Sehnen", d: "Keine Milch." },
+            { n: "Clindamycin", g: "Lincosamid", a: "Zahn/Knochen", nw: "Kolitis", d: "Viel Wasser." },
+            { n: "Aciclovir", g: "Virostatikum", a: "Herpes", nw: "Niere", d: "Flüssigkeit hoch." },
+            { n: "Doxycyclin", g: "Tetracyclin", a: "Atemwege", nw: "Licht", d: "Nicht im Liegen." },
+            { n: "Cotrimoxazol", g: "Sulfonamid", a: "Infekt", nw: "Haut", d: "Viel trinken." },
+            { n: "Ozempic", g: "GLP-1", a: "Zucker", nw: "Übelkeit", d: "1x wöchentlich." },
+            { n: "Jardiance", g: "SGLT-2", a: "Zucker", nw: "HWI", d: "Genitalhygiene." },
+            { n: "Omeprazol", g: "PPI", a: "Reflux", nw: "Magen", d: "Vorm Essen." },
+            { n: "Lopedium", g: "Durchfall", a: "Darmstopp", nw: "Ileus", d: "Max 2 Tage." },
+            { n: "Iberogast", g: "Pflanzlich", a: "Magen", nw: "Keine", d: "Vor dem Essen." },
+            { n: "MCP", g: "Übelkeit", a: "Darmmotorik", nw: "Zittern", d: "Max 5 Tage." },
+            { n: "Vomex", g: "Antihistamin", a: "Übelkeit", nw: "Schläfrig", d: "Sturzgefahr." },
+            { n: "Spasmex", g: "Anticholinerg", a: "Blase", nw: "Mundtrocken", d: "Vor dem Essen." },
+            { n: "Vesikur", g: "Spasmolytikum", a: "Drang", nw: "Darm", d: "Nicht kauen." },
+            { n: "Tamsulosin", g: "Prostata", a: "Harnfluss", nw: "RR-Abfall", d: "Morgens." },
+            { n: "Clexane", g: "Heparin", a: "Prophylaxe", nw: "HIT", d: "Bauchfalte." },
+            { n: "ASS 100", g: "Aggregationsh.", a: "Herzschutz", nw: "Magen", d: "Nach Essen." },
+            { n: "Prednisolon", g: "Kortison", a: "Entzündung", nw: "Zucker hoch", d: "Morgens." },
+            { n: "Salbutamol", g: "Spray", a: "Atemnot", nw: "Zittern", d: "Bedarf." },
+            { n: "Spiriva", g: "Inhalat", a: "COPD", nw: "Mundtrocken", d: "Kapsel inhalieren." },
+            { n: "Foster", g: "Kombi", a: "Asthma", nw: "Soor", d: "Mund spülen." },
+            { n: "Viani", g: "Kombi", a: "COPD", nw: "Heiser", d: "Regelmäßig." },
+            { n: "Madopar", g: "L-Dopa", a: "Parkinson", nw: "Dyskinesie", d: "Abstand Essen." },
+            { n: "Akineton", g: "Anticholinerg", a: "Tremor", nw: "Harnverhalt", d: "Glaukom-Check." },
+            { n: "Pramipexol", g: "Agonist", a: "Parkinson", nw: "Müde", d: "Abends." },
+            { n: "Fucidine", g: "Antibiotikum", a: "Wunde", nw: "Reizung", d: "Dünn auftragen." },
+            { n: "Betaisodona", g: "Jod", a: "Desinfektion", nw: "Schilddrüse", d: "Flecken Kleidung." },
+            { n: "Mirfulan", g: "Zink", a: "Wundsein", nw: "Keine", d: "Heilend." },
+            { n: "Fenistil", g: "Antihistamin", a: "Juckreiz", nw: "Müde", d: "Kühlend." },
+            { n: "Dekristol", g: "Vit D", a: "Knochen", nw: "Calcium", d: "1x wöchentlich." },
+            { n: "Ferrum Hausm.", g: "Eisen", a: "Anämie", nw: "Stuhl schwarz", d: "Mit Vit C." },
+            { n: "Magnesium", g: "Mineral", a: "Krampf", nw: "Durchfall", d: "Von AB trennen." },
+            { n: "Vit B12", g: "Vitamin", a: "Nerven", nw: "Akne", d: "I.m. Spritze." },
+            { n: "Kalnorid", g: "Kalium", a: "Mangel", nw: "Magen", d: "Zum Essen." },
+            { n: "Allopurinol", g: "Gicht", a: "Harnsäure", nw: "Haut", d: "Viel trinken." },
+            { n: "Colchicin", g: "Gichtmittel", a: "Anfall", nw: "Darm", d: "Giftig alto dosiert." },
+            { n: "Glaubpax", g: "Glaukom", a: "Druck", nw: "Geschmack", d: "Augentropfen." },
+            { n: "Lumigan", g: "Prostaglandin", a: "Glaukom", nw: "Rot", d: "Abends." },
+            { n: "Artelac", g: "Tränen", a: "Trocken", nw: "Keine", d: "Nach Bedarf." }
+        ];
+
+        const dbPflege = [
+            { n: "PEG Versorgung", g: "Sonde", a: "Ernährung", nw: "Infektion", d: "30° OK-Hoch." },
+            { n: "Dekubitus", g: "Haut", a: "Druck", nw: "Nekrose", d: "Lagerungsplan." },
+            { n: "Epilept. Anfall", g: "Neuro", a: "Sicherheit", nw: "Status", d: "Zeit stoppen." },
+            { n: "Mundpflege", g: "Basispflege", a: "Soor", nw: "Keime", d: "2x täglich." }
+        ];
+
+        const dbInfusion = [
+            { n: "NaCl 0,9%", g: "Kochsalz", a: "Flüssigkeit", nw: "Ödeme", d: "Standard." },
+            { n: "Sterofundin", g: "Ringer", a: "Elektrolyte", nw: "Verschiebung", d: "Isotonisch." },
+            { n: "Glucose 5%", g: "Zucker", a: "Träger", nw: "Zucker hoch", d: "Nicht bei DM." }
+        ];
+
+        const dbNeuro = [
+            { n: "Parkinson", g: "Neuro", a: "Tremor", nw: "Sturz", d: "L-Dopa Zeit!" },
+            { n: "Apoplex", g: "Neuro", a: "Lähmung", nw: "Aphasie", d: "FAST-Test." },
+            { n: "MS", g: "Autoimmun", a: "Schub", nw: "Sehstörung", d: "Kortison." }
+        ];
+
+        const dbSymptome = [
+            { n: "Exsikkose", g: "Mangel", a: "Hautfalten", nw: "Niere", d: "Trinken forcieren." },
+            { n: "Obstipation", g: "Darm", a: "Kein Stuhl", nw: "Ileus", d: "Ballaststoffe." },
+            { n: "Dyspnoe", g: "Atmung", a: "Atemnot", nw: "Panik", d: "Lippenbremse." }
+        ];
+
+        function nav(id) {
+            const screens = ['screen-menu', 'screen-meds', 'screen-pflege', 'screen-infusion', 'screen-neuro', 'screen-symptome'];
+            screens.forEach(s => {
+                const el = document.getElementById(s);
+                if(el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(id);
+            if(target) target.classList.remove('hidden');
+            if(id === 'screen-menu') document.getElementById('luqui-bubble').innerText = phrases.welcome;
+        }
+
+        function search(type) {
+            let db, listId, inputId;
+            if (type === 'med') { db = dbMeds; listId = 'list-m'; inputId = 'searchM'; }
+            else if (type === 'pflege') { db = dbPflege; listId = 'list-p'; inputId = 'searchP'; }
+            else if (type === 'infusion') { db = dbInfusion; listId = 'list-i'; inputId = 'searchI'; }
+            else if (type === 'neuro') { db = dbNeuro; listId = 'list-n'; inputId = 'searchN'; }
+            else if (type === 'symptom') { db = dbSymptome; listId = 'list-s'; inputId = 'searchS'; }
+
+            const query = document.getElementById(inputId).value.toLowerCase();
+            const list = document.getElementById(listId);
+            list.innerHTML = "";
+            if (query.trim() === "") return;
+
+            db.filter(item => item.n.toLowerCase().includes(query) || item.g.toLowerCase().includes(query)).forEach(res => {
+                const div = document.createElement('div');
+                div.className = 'res-item';
+                div.innerHTML = `<strong>${res.n}</strong> <small>(${res.g})</small><br>
+                    <div style="font-size:0.85em; margin-top:5px;">🎯 ${res.a}</div>
+                    <div class="nw-box">⚠️ NW: ${res.nw}</div>
+                    <div class="tip-box">💡 Tipp: ${res.d}</div>`;
+                list.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
