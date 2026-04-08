@@ -221,81 +221,52 @@
             { n: "Dyspnoe", g: "Atmung", a: "Atemnot", nw: "Panik", d: "Lippenbremse." }
         ];
 
-              ]; // Cierre de dbSymptom
+                   // --- AQUÍ EMPIEZAN LAS INSTRUCCIONES (FUNCIONES) ---
 
-        // --- EL CEREBRO DE LUQUI (Las funciones) ---
-
-        // 1. Esta función hace que Luqui hable cuando pasas el mouse
+        // 1. Definimos LuquiTalk para que el error rojo desaparezca
         function luquiTalk(key) {
             const bubble = document.getElementById('luqui-bubble');
-            if(phrases[key]) {
+            if (phrases && phrases[key]) {
                 bubble.innerText = phrases[key];
             }
         }
 
-        // 2. Esta función cambia las pantallas al hacer clic
+        // 2. Definimos Nav para que los botones cambien de pantalla
         function nav(screenId) {
-            // Escondemos todas las pantallas
             const screens = ['screen-menu', 'screen-meds', 'screen-pflege', 'screen-infusion', 'screen-neuro', 'screen-symptome'];
             screens.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) el.classList.add('hidden');
             });
-            // Mostramos la pantalla elegida
-            document.getElementById(screenId).classList.remove('hidden');
             
-            // Si volvemos al menú, Luqui saluda de nuevo
+            const target = document.getElementById(screenId);
+            if(target) target.classList.remove('hidden');
+            
             if(screenId === 'screen-menu') luquiTalk('welcome');
         }
 
-        // 3. Esta función busca en las listas que creaste
+        // 3. Definimos Search para que las búsquedas funcionen
         function search(type) {
-            let input, list, data;
-            
-            if(type === 'med') { 
-                input = document.getElementById('searchM').value.toLowerCase();
-                list = document.getElementById('list-m');
-                data = dbMeds;
-            } else if(type === 'pflege') {
-                input = document.getElementById('searchP').value.toLowerCase();
-                list = document.getElementById('list-p');
-                data = dbPflege;
-            } else if(type === 'infusion') {
-                input = document.getElementById('searchI').value.toLowerCase();
-                list = document.getElementById('list-i');
-                data = dbInfusion;
-            } else if(type === 'neuro') {
-                input = document.getElementById('searchN').value.toLowerCase();
-                list = document.getElementById('list-n');
-                data = dbNeuro;
-            } else if(type === 'symptom') {
-                input = document.getElementById('searchS').value.toLowerCase();
-                list = document.getElementById('list-s');
-                data = dbSymptom;
-            }
+            let data, listId, inputId;
+            if (type === 'med') { data = dbMeds; listId = 'list-m'; inputId = 'searchM'; }
+            else if (type === 'pflege') { data = dbPflege; listId = 'list-p'; inputId = 'searchP'; }
+            else if (type === 'infusion') { data = dbInfusion; listId = 'list-i'; inputId = 'searchI'; }
+            else if (type === 'neuro') { data = dbNeuro; listId = 'list-n'; inputId = 'searchN'; }
+            else if (type === 'symptom') { data = dbSymptom; listId = 'list-s'; inputId = 'searchS'; }
 
-            if(!list || !data) return;
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+            if (!input || !list || !data) return;
 
-            list.innerHTML = ''; // Limpiar la lista antes de mostrar resultados
-
-            data.filter(item => item.n.toLowerCase().includes(input)).forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'res-item';
-                div.innerHTML = `
-                    <strong>${item.n}</strong><br>
-                    <small>${item.a || ''}</small>
-                    <div class="tip-box">💡 ${item.d || 'Sin notas'}</div>
-                `;
-                list.appendChild(div);
+            const query = input.value.toLowerCase();
+            list.innerHTML = "";
+            data.filter(item => item.n.toLowerCase().includes(query)).forEach(item => {
+                list.innerHTML += `<div class="res-item"><strong>${item.n}</strong><br><small>${item.d || ''}</small></div>`;
             });
         }
-
-        // Iniciar las listas al cargar la página
-        window.onload = () => { 
-            search('med'); 
-            search('pflege');
-        };
     </script>
 </body>
+</html>
+
 </html>
 
