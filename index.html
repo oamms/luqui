@@ -221,40 +221,81 @@
             { n: "Dyspnoe", g: "Atmung", a: "Atemnot", nw: "Panik", d: "Lippenbremse." }
         ];
 
-        function nav(id) {
-            const screens = ['screen-menu', 'screen-meds', 'screen-pflege', 'screen-infusion', 'screen-neuro', 'screen-symptome'];
-            screens.forEach(s => {
-                const el = document.getElementById(s);
-                if(el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(id);
-            if(target) target.classList.remove('hidden');
-            if(id === 'screen-menu') document.getElementById('luqui-bubble').innerText = phrases.welcome;
+              ]; // Cierre de dbSymptom
+
+        // --- EL CEREBRO DE LUQUI (Las funciones) ---
+
+        // 1. Esta función hace que Luqui hable cuando pasas el mouse
+        function luquiTalk(key) {
+            const bubble = document.getElementById('luqui-bubble');
+            if(phrases[key]) {
+                bubble.innerText = phrases[key];
+            }
         }
 
+        // 2. Esta función cambia las pantallas al hacer clic
+        function nav(screenId) {
+            // Escondemos todas las pantallas
+            const screens = ['screen-menu', 'screen-meds', 'screen-pflege', 'screen-infusion', 'screen-neuro', 'screen-symptome'];
+            screens.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.classList.add('hidden');
+            });
+            // Mostramos la pantalla elegida
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            // Si volvemos al menú, Luqui saluda de nuevo
+            if(screenId === 'screen-menu') luquiTalk('welcome');
+        }
+
+        // 3. Esta función busca en las listas que creaste
         function search(type) {
-            let db, listId, inputId;
-            if (type === 'med') { db = dbMeds; listId = 'list-m'; inputId = 'searchM'; }
-            else if (type === 'pflege') { db = dbPflege; listId = 'list-p'; inputId = 'searchP'; }
-            else if (type === 'infusion') { db = dbInfusion; listId = 'list-i'; inputId = 'searchI'; }
-            else if (type === 'neuro') { db = dbNeuro; listId = 'list-n'; inputId = 'searchN'; }
-            else if (type === 'symptom') { db = dbSymptome; listId = 'list-s'; inputId = 'searchS'; }
+            let input, list, data;
+            
+            if(type === 'med') { 
+                input = document.getElementById('searchM').value.toLowerCase();
+                list = document.getElementById('list-m');
+                data = dbMeds;
+            } else if(type === 'pflege') {
+                input = document.getElementById('searchP').value.toLowerCase();
+                list = document.getElementById('list-p');
+                data = dbPflege;
+            } else if(type === 'infusion') {
+                input = document.getElementById('searchI').value.toLowerCase();
+                list = document.getElementById('list-i');
+                data = dbInfusion;
+            } else if(type === 'neuro') {
+                input = document.getElementById('searchN').value.toLowerCase();
+                list = document.getElementById('list-n');
+                data = dbNeuro;
+            } else if(type === 'symptom') {
+                input = document.getElementById('searchS').value.toLowerCase();
+                list = document.getElementById('list-s');
+                data = dbSymptom;
+            }
 
-            const query = document.getElementById(inputId).value.toLowerCase();
-            const list = document.getElementById(listId);
-            list.innerHTML = "";
-            if (query.trim() === "") return;
+            if(!list || !data) return;
 
-            db.filter(item => item.n.toLowerCase().includes(query) || item.g.toLowerCase().includes(query)).forEach(res => {
+            list.innerHTML = ''; // Limpiar la lista antes de mostrar resultados
+
+            data.filter(item => item.n.toLowerCase().includes(input)).forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'res-item';
-                div.innerHTML = `<strong>${res.n}</strong> <small>(${res.g})</small><br>
-                    <div style="font-size:0.85em; margin-top:5px;">🎯 ${res.a}</div>
-                    <div class="nw-box">⚠️ NW: ${res.nw}</div>
-                    <div class="tip-box">💡 Tipp: ${res.d}</div>`;
+                div.innerHTML = `
+                    <strong>${item.n}</strong><br>
+                    <small>${item.a || ''}</small>
+                    <div class="tip-box">💡 ${item.d || 'Sin notas'}</div>
+                `;
                 list.appendChild(div);
             });
         }
+
+        // Iniciar las listas al cargar la página
+        window.onload = () => { 
+            search('med'); 
+            search('pflege');
+        };
     </script>
 </body>
 </html>
+
